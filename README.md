@@ -5,7 +5,7 @@ If you are installing on windows, make sure you click on "Add to path" when inst
 
 Install the required modules listed in "Requirements.txt". An easy way to install them all at once can be found here: https://pip.pypa.io/en/latest/user_guide/#requirements-files
 
-Open the "bot.py" file in an editor of your choice. Fill in the necessary information, such as Email, Password, Prefix, and User ID.
+Open the "bot.py" file in an editor of your choice. Fill in the necessary information, such as Email, Password, Prefix, and User ID. To add commands, simply follow the template commmands located in bot.py.
 
 Once all the information is filled in, run the "bot.py" file in a python interpreter. For the first time running this, you will need to solve a captcha to log into iFunny's servers. The captcha will open 
 in a browser window automatically. Solve the captcha in your browser and click "Done". You will know you completed it correctly when no error message appears and nothing seems to happen. You can now close
