@@ -417,7 +417,7 @@ class Buffer:
 		
 		if frame_type == "message":
 		
-			payload["local_id"] = "RainOS v1.4"
+			payload["local_id"] = "Python Bot"
 					
 			if not request_id:
 				request_id = self.ifunny_ws_counter
