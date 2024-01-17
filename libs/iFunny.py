@@ -690,14 +690,6 @@ class Bot:
 		self.blacklist_db_cur.execute("CREATE TABLE IF NOT EXISTS users (id TEXT, unique(id))")
 		self.blacklist_db_con.commit()
 		self._blacklist = set([i[0] for i in self.blacklist_db_cur.execute("SELECT * FROM users")])
-
-	def load_blacklistchat(self):
-		
-		self.blacklistc_db_con = sqlite3.connect("libs/data/chats.db")
-		self.blacklistc_db_cur = self.blacklistc_db_con.cursor()
-		self.blacklistc_db_cur.execute("CREATE TABLE IF NOT EXISTS users (id TEXT, unique(id))")
-		self.blacklistc_db_con.commit()
-		self._blacklistc = set([i[0] for i in self.blacklistc_db_cur.execute("SELECT * FROM users")])
 			
 
 	async def message_queuer(self):
