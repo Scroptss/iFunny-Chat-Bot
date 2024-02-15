@@ -465,13 +465,9 @@ class Bot:
 
 	def login(self):
 
-		url = host+"/v4/oauth2/token"
-
-		paramz = {
-			'grant_type':'password',
-            'username': self.email,
-            'password': self.password
-            }
+		paramz = {'grant_type':'password',
+			  'username': self.email,
+			  'password': self.password }
 		
 		header = {'Host': 'api.ifunny.mobi','Applicationstate': '1','Accept': 'video/mp4, image/jpeg','Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Basic '+self.basic,'Content-Length':'77','Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)','Accept-Language': 'en-US;q=1','Accept-Encoding': 'gzip, deflate'}
 		userheader = {'Host': 'api.ifunny.mobi','Accept': 'video/mp4, image/jpeg','Applicationstate': '1','Accept-Encoding': 'gzip, deflate','Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/7.14.2(22213) iphone/14.0.1 (Apple; iPhone8,4)','Accept-Language': 'en-US;q=1','Authorization': 'Basic '+self.basic,}
@@ -483,7 +479,7 @@ class Bot:
 				self.buff = ws_client.Buffer(self.bearer, self.user_id, self.ws_region, self.parse)
 				return	
 			
-			login = requests.post(url,headers=header,data=paramz).json()
+			login = requests.post(host + "/v4/oauth2/token", headers=header, data=paramz).json()
 			
 			if "error" in login:
 
@@ -504,12 +500,12 @@ class Bot:
 					raise LoginError("auth rate succeeded, try again later")
 				
 				if login["error"] == "forbidden":
-					requests.get(host+"/v4/counters",headers=userheader)
-					cprint(("Priming your basic auth token...", "green"))
-					time.sleep(10)
 					index += 1
 					if index > 1:
 						raise LoginError("Your email or password is incorrect! Please check your credentials and try again.")
+					requests.get(host+"/v4/counters", headers=userheader)
+					cprint(("Priming your basic auth token...", "green"))
+					time.sleep(10)
 					continue
 
 				if login["error"] == "invalid_grant":
@@ -518,18 +514,16 @@ class Bot:
 			break        
 
 		self.bearer = login["access_token"]
-		url = host+"/v4/account"
 		acctheader = {"Authorization":"Bearer " + self.bearer,'Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)'}
-		Account = requests.get(url,headers = acctheader).json()
+		Account = requests.get(host + "/v4/account", headers = acctheader).json()
 		self.user_id = Account["data"]["id"]
 
-		with open("./libs/Auth.json","r") as Auth:
-			Auth = json.load(Auth)
+		with open("./libs/Auth.json", "r+") as File:
+			Auth = json.load(File)
 			Auth["bearer"] = self.bearer
 			Auth["user_id"] = self.user_id
 			Auth["basic"] = self.basic
-			with open("./libs/Auth.json","w") as file:
-				json.dump(Auth,file,indent=1)
+			json.dump(Auth, File, indent=1)
 
 		self.buff = ws_client.Buffer(self.bearer, self.user_id, self.ws_region, self.parse)
 		
