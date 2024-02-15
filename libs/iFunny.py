@@ -758,9 +758,12 @@ class Bot:
 		if self.on_join:
 			await asyncio.sleep(0.1)
 			self.run_callback(self.on_join, ctx)
+
+	
 	async def reject_invite(self, ctx):
 		await self.buff.send_ifunny_ws(await self.buff.form_ifunny_frame({"type": "decline_invitation", "chat_id": ctx.chat.id}))
 		cprint(("Rejected invite from blacklist:","red"),(f"{ctx.chat.title}","cyan"))
+
 
 	async def get_chat(self,chat_id):
 		request_id = int(time.time()*1000)
