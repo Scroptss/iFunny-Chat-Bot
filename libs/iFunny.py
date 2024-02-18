@@ -518,12 +518,13 @@ class Bot:
 		Account = requests.get(host + "/v4/account", headers = acctheader).json()
 		self.user_id = Account["data"]["id"]
 
-		with open("./libs/Auth.json", "r+") as File:
+		with open("./libs/Auth.json", "r") as File:
 			Auth = json.load(File)
 			Auth["bearer"] = self.bearer
 			Auth["user_id"] = self.user_id
 			Auth["basic"] = self.basic
-			json.dump(Auth, File, indent=1)
+			with open("./libs/Auth.json", "w") as F:
+				json.dump(Auth, F, indent = 1)
 
 		self.buff = ws_client.Buffer(self.bearer, self.user_id, self.ws_region, self.parse)
 		
