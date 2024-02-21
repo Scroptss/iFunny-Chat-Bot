@@ -99,14 +99,14 @@ async def chatid(ctx, *args):
 
 
 @bot.command(hide_help=True, developer=True, aliases = ["bl"])
-async def blacklist(ctx, username=None,*args):
+async def blacklist(ctx, *args):
 	chat = ctx.chat
 
 	if args:
-		user = await ctx.user(username)
+		user = await ctx.user(args[0])
 		if not user:
 			return await chat.send("Input a valid username")		
-		ctx.bot.blacklist(user)		
+		ctx.bot.blacklist(user)
 		return await chat.send(f"{user.nick} has been blacklisted")
 	
 	return await chat.send(f"There are {len(ctx.bot.blacklist())} Blacklisted Users")
