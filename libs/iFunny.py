@@ -221,9 +221,6 @@ class CTX:
 	
 	def __init__(self, bot=None):
 		self.bot = bot
-
-	async def getchat(self,chat_id):
-		return await(getchat(chat_id,self.bot))
 		
 	async def user(self, nick_or_id):
 		return await(user(nick_or_id, self.bot))
@@ -393,18 +390,6 @@ class Chat(CTXtype):
 		
 	async def input(self, type=Message, timeout=None):
 		return await self.bot.input(self.id, type, timeout)
-
-async def getchat(chat_id:str,bot=None):
-
-	await bot.buff.send_ifunny_ws(json.dumps([48,bot.buff.ifunny_ws_counter,{},"co.fun.chat.get_chat",[],{"chat_name":chat_id}]))
-	await asyncio.sleep(2)
-	data = ws_client.chat_info
-	if data == []:
-		return None
-	else:
-		data = data[0]
-	return Chat(data["chat"],bot)
-
 
 
 class Bot:
