@@ -80,13 +80,11 @@ async def expose(ctx,*args):
 	members = await chat.members()
 	msg = "Users online:\n\n"
 
-	for i in range(0,len(members)):
-		user = members[i]
-		name = user.nick
-		time = user.status
-		if time != 0:
+	for member in members:
+		if member.status != 0:
 			continue
-		msg += f"{name}\n"
+		
+		msg += f"{member.nick}\n"
 
 	return await chat.send(msg)
 
