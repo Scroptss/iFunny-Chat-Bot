@@ -107,9 +107,6 @@ async def RESULT(ws_buffer, response_to, data):
 		first_item = key_list[0]
 
 		if first_item == "message_id":
-			if message_ids != []:
-					message_ids.clear()
-			message_ids.append(data["message_id"])
 			if q := ws_buffer.request_id_queues.get(response_to):
 				await q.put(data["message_id"])
 			return {"type": "file_id", "file_id": data["message_id"], "response_to": response_to}
@@ -128,6 +125,9 @@ async def RESULT(ws_buffer, response_to, data):
 				return {"type": "message_list", "message_list": data["messages"],
 					"prev_cursor": data.get("prev"), "next_cursor": data.get("next"),
 					"response_to": response_to, "chat_id": chat_id}
+
+		elif first_item == "chat":
+			return {"type": "chat_response", "data": data, "response_to": response_to}
 			
 		elif "chats" in key_list:
 			chats = parse_all_chats(ws_buffer, data["chats"])
