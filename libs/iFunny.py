@@ -746,18 +746,21 @@ class Bot:
 
 
 	async def get_chat(self,chat_id):
-		request_id = int(time.time()*1000)
-		self.member_request_ids[request_id] = chat_id
+		request_id = self.buff.ifunny_ws_counter
+		self.chat_request_ids[request_id] = chat_id
 		
 		self.chat_list_queues[chat_id] = asyncio.Queue()
 		await self.buff.send_ifunny_ws(await self.buff.form_ifunny_frame({"type": "get_chat","chat_id": chat_id, "request_id": request_id}))
+		
 		try:
-			chat_info = await asyncio.wait_for(self.chat_list_queues[chat_id].get(), 3)
+			chat_info = await asyncio.wait_for(self.chat_list_queues[chat_id].get(), 5)
 		except asyncio.TimeoutError:
-			chat_info = []
+			del self.chat_list_queues[chat_id]
+			return None
 
 		del self.chat_list_queues[chat_id]
-		return chat_info
+
+		return Chat(chat_info['chat'], self)
 			
 	async def get_members(self, chat_id):
 		request_id = int(time.time()*1000)
@@ -811,10 +814,18 @@ class Bot:
 		if not isinstance(data, io.BytesIO):
 			data = io.BytesIO(data.read())
 
+		response_to = self.buff.ifunny_ws_counter
+		self.buff.request_id_queues[response_to] = asyncio.Queue()
 		await self.buff.send_ifunny_ws(json.dumps([48, self.buff.ifunny_ws_counter, {}, "co.fun.chat.message.create_empty", [], {"chat_name": f"{chat_id}"}]))
-		await asyncio.sleep(.3)
-		message_id = ws_client.message_ids[0]
-		await self.buff.send_ifunny_ws(json.dumps([48, self.buff.ifunny_ws_counter, {}, "co.fun.chat.get_chat", [], {"chat_name": f"{chat_id}"}]))
+
+		try:
+			message_id = await asyncio.wait_for(self.buff.request_id_queues[response_to].get(), 5)
+		except asyncio.TimeoutError:
+			del self.buff.request_id_queues[response_to]
+			cprint(("Error uploading image", "red"),("Timed out waiting for message ID","yellow"))
+			return
+		
+		del self.buff.request_id_queues[response_to]
 
 		headers = {
 			"Host": "api.ifunny.mobi",
