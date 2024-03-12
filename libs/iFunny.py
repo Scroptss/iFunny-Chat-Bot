@@ -805,7 +805,11 @@ class Bot:
 			if "https://" in data:
 				data = urlopen(data)
 
-		data = io.BytesIO(data.read())
+		if isinstance(data, io.BufferedReader):
+			data.seek(0)
+
+		if not isinstance(data, io.BytesIO):
+			data = io.BytesIO(data.read())
 
 		await self.buff.send_ifunny_ws(json.dumps([48, self.buff.ifunny_ws_counter, {}, "co.fun.chat.message.create_empty", [], {"chat_name": f"{chat_id}"}]))
 		await asyncio.sleep(.3)
