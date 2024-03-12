@@ -100,7 +100,6 @@ def EVENT(ws_buffer, data):
 		
 message_ids = []
 chat_frames = []
-chat_info = []
 
 async def RESULT(ws_buffer, response_to, data):
 	try:
@@ -129,11 +128,6 @@ async def RESULT(ws_buffer, response_to, data):
 				return {"type": "message_list", "message_list": data["messages"],
 					"prev_cursor": data.get("prev"), "next_cursor": data.get("next"),
 					"response_to": response_to, "chat_id": chat_id}
-		elif first_item == "chat":
-			if chat_info != []:
-				chat_info.clear()
-			chat_info.append(data)
-			return None
 			
 		elif "chats" in key_list:
 			chats = parse_all_chats(ws_buffer, data["chats"])
