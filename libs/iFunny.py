@@ -114,6 +114,13 @@ class Parser:
 		if chat_id := bot.member_request_ids.get(frame["response_to"]):
 			if q := bot.member_list_queues.get(chat_id):
 				await q.put(frame["member_list"])
+
+	@staticmethod
+	async def chat_response(bot, ctx, frame):	
+
+		if chat_id := bot.chat_request_ids.get(frame["response_to"]):
+			if q := bot.chat_list_queues.get(chat_id):
+				await q.put(frame["data"])
 		
 		
 	@staticmethod
