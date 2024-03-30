@@ -179,11 +179,11 @@ async def user_by_nick(nick: str, bot=None):
     'Host': 'api.ifunny.mobi',
     'Accept': 'video/mp4, image/jpeg',
     'Applicationstate': '1',
-    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Encoding': 'gzip, deflate, br',
     'Ifunny-Project-Id': 'iFunny',
-    'User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)',
-    'Accept-Language': 'en-US;q=1',
-    'Authorization': 'Basic ' + basic,}
+    'User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)',
+    'Authorization': 'Basic ' + basic,
+    'Accept-Language': 'en-US',}
 
 	data = requests.get(host+'/v4/users/by_nick/'+nick, headers=userheader).json()
 
@@ -198,11 +198,11 @@ async def user_by_id(user_id: str, bot=None):
     'Host': 'api.ifunny.mobi',
     'Accept': 'video/mp4, image/jpeg',
     'Applicationstate': '1',
-    'Accept-Encoding': 'gzip, deflate',
+    'Accept-Encoding': 'gzip, deflate, br',
     'Ifunny-Project-Id': 'iFunny',
-    'User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)',
-    'Accept-Language': 'en-US;q=1',
-    'Authorization': 'Basic ' + basic,}
+    'User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)',
+    'Authorization': 'Basic ' + basic,
+    'Accept-Language': 'en-US',}
 
 	data = requests.get(host+"/v4/users/"+user_id,headers=userheader)
 	data = data.json()
@@ -212,7 +212,7 @@ async def user_by_id(user_id: str, bot=None):
 	
 async def get_profile(bearer):	
 	
-	headers = {"Authorization":"Bearer " + bearer,'Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)'}
+	headers = {"Authorization":"Bearer " + bearer,'Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)'}
 	req = requests.get(host + "/v4/account",headers = headers).json()
 	if req["status"] == 200:
 		return True
@@ -461,8 +461,8 @@ class Bot:
 			  'username': self.email,
 			  'password': self.password }
 		
-		header = {'Host': 'api.ifunny.mobi','Applicationstate': '1','Accept': 'video/mp4, image/jpeg','Content-Type': 'application/x-www-form-urlencoded','Authorization': 'Basic '+self.basic,'Content-Length':'77','Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)','Accept-Language': 'en-US;q=1','Accept-Encoding': 'gzip, deflate'}
-		userheader = {'Host': 'api.ifunny.mobi','Accept': 'video/mp4, image/jpeg','Applicationstate': '1','Accept-Encoding': 'gzip, deflate','Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/7.14.2(22213) iphone/14.0.1 (Apple; iPhone8,4)','Accept-Language': 'en-US;q=1','Authorization': 'Basic '+self.basic,}
+		header = {'Host': 'api.ifunny.mobi','Applicationstate': '1','Accept': 'video/mp4, image/jpeg','Content-Type': 'application/x-www-form-urlencoded; charset=utf-8','Authorization': 'Basic '+self.basic,'Content-Length':'77','Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)','Accept-Language': 'en-US','Accept-Encoding': 'gzip, deflate'}
+		userheader = {'Host': 'api.ifunny.mobi','Accept': 'video/mp4, image/jpeg','Applicationstate': '1','Accept-Encoding': 'gzip, deflate','Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)','Accept-Language': 'en-US;q=1','Authorization': 'Basic '+self.basic,}
 		index = 0
 
 		while True:
@@ -506,7 +506,7 @@ class Bot:
 			break        
 
 		self.bearer = login["access_token"]
-		acctheader = {"Authorization":"Bearer " + self.bearer,'Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)'}
+		acctheader = {"Authorization":"Bearer " + self.bearer,'Ifunny-Project-Id': 'iFunny','User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)'}
 		Account = requests.get(host + "/v4/account", headers = acctheader).json()
 		self.user_id = Account["data"]["id"]
 
@@ -816,7 +816,7 @@ class Bot:
 				data = urlopen(data)
 
 		if isinstance(data, io.BufferedReader):
-			data.seek(0)
+			data.seek(0) #Reset the cursor to the beginning of the file, just in case.
 
 		if not isinstance(data, io.BytesIO):
 			data = io.BytesIO(data.read())
@@ -837,13 +837,13 @@ class Bot:
 		headers = {
 			"Host": "api.ifunny.mobi",
 			"Accept": "video/mp4, image/jpeg",
-			"Accept-Encoding": "gzip, deflate",
-			"Connection": "close",
 			"ApplicationState": "1",
 			"Authorization": "Bearer " + self.bearer,
+			"Content-Length": str(data.getbuffer().nbytes),
 			"iFunny-Project-Id": "iFunny",
-			"User-Agent": "iFunny/8.1.1(22616) iphone/14.0.1 (Apple; iPhone8,4)",
-			"Accept-Language": "en-US;q=1, zh-Hans-US;q=0.9"
+			'User-Agent': 'iFunny/8.41.11(24194) iPhone/16.3.1 (Apple; iPhone12,5)',
+			"Accept-Language": "en-US;q=1",
+			"Accept-Encoding": "gzip, deflate, br",
 			}
 
 		mime = fleep.get(data.getvalue()).mime
@@ -861,8 +861,11 @@ class Bot:
 			file_type = "video"
 		else:
 			file_type = "image"
-		re = requests.post(url='https://api.ifunny.mobi/v4/content', data={'message_id':message_id, 'type':upload_type, 'tags':[], 'description':'', 'visibility':'chats'}, headers=headers, files={file_type: ("image.tmp", data.getvalue(), mime[0])}).json()
+
+		res = requests.post(url='https://api.ifunny.mobi/v4/content', data={'message_id':message_id, 'type':upload_type, 'tags':[], 'description':'', 'visibility':'chats'}, headers=headers, files={file_type: ("image.tmp", data.getvalue(), mime[0])})
 		
+		if res.status_code != 202:
+			cprint(("Error uploading image", "red"),(res.json(),"yellow"))
 			
 		
 	async def parse(self, frame):
