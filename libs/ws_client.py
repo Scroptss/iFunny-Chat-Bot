@@ -343,8 +343,6 @@ class Buffer:
 		
 		elif frame_type_id == 4: #send bearer to authenticate
 			try:
-				await asyncio.sleep(2)
-				await iFunny.get_profile(self.bearer)
 				await self.ifunny_ws.send(json.dumps([5,self.bearer,{}]))
 			except:
 				await self.connect_ifunny()
